@@ -2,7 +2,7 @@
 	"name": "json-scape-unscape",
 	"displayName": "Json-scape/unscape",
 	"description": "remove scape from format json and formatted to scaped json",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"publisher": "yuvraj",
 	"repository": {
 		"type": "git",
