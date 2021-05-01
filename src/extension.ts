@@ -15,10 +15,11 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage('Not able to get text!');
 					return;
 			}
+			
 			if (editor.selections.length > 1){
 				vscode.window.showWarningMessage("Multiple Selection not supported");
 			}
-			let count = 0; 
+
 			let diffSelectChar =  editor.selections[0].end.character - editor.selections[0].start.character
 			let diffLineChar =  editor.selections[0].end.line - editor.selections[0].start.line
 
@@ -39,38 +40,42 @@ export function activate(context: vscode.ExtensionContext) {
 				} else{
 					break;
 				}
-			}		
-			if (diffSelectChar === 0 && flag) {
-				const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
-					semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
-			
-				const lastLineId = editor.document.lineCount - 1;
-				const range : vscode.Range = new vscode.Range(0, 0, lastLineId, editor.document.lineAt(lastLineId).text.length);
-				const textEdit : vscode.TextEdit = vscode.TextEdit.replace(range, message);
-			
-				await editor.edit((editBuilder) => {
-					editBuilder.replace(textEdit.range, textEdit.newText);
-				});
-				goToStartingPosition(editor)
-				vscode.languages.setTextDocumentLanguage(editor.document, 'json');
-			} else if (flag){
-				if (diffLineChar === editor.document.lineCount-1) {
+			}
+			if (flag) {
+				if (diffSelectChar) {
 					const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
-					semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
-					const textEdit : vscode.TextEdit = vscode.TextEdit.replace(editor.selections[0], message);
+						semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
+				
+					const lastLineId = editor.document.lineCount - 1;
+					const range : vscode.Range = new vscode.Range(0, 0, lastLineId, editor.document.lineAt(lastLineId).text.length);
+					const textEdit : vscode.TextEdit = vscode.TextEdit.replace(range, message);
+				
 					await editor.edit((editBuilder) => {
 						editBuilder.replace(textEdit.range, textEdit.newText);
 					});
 					goToStartingPosition(editor)
 					vscode.languages.setTextDocumentLanguage(editor.document, 'json');
 				} else {
-					const doc = await vscode.workspace.openTextDocument({
-						language: 'json',
-						content: prettier.format(content, {bracketSpacing:false, trailingComma: "es5",
-					 		tabWidth: 4, semi: false, singleQuote: true, parser: "json-stringify",}).trim(),
-					});
-					vscode.window.showTextDocument(doc);
-				}	
+					if (diffLineChar === editor.document.lineCount-1) {
+						const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
+						semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
+						const textEdit : vscode.TextEdit = vscode.TextEdit.replace(editor.selections[0], message);
+						await editor.edit((editBuilder) => {
+							editBuilder.replace(textEdit.range, textEdit.newText);
+						});
+						goToStartingPosition(editor)
+						vscode.languages.setTextDocumentLanguage(editor.document, 'json');
+					} else {
+						const doc = await vscode.workspace.openTextDocument({
+							language: 'json',
+							content: prettier.format(content, {bracketSpacing:false, trailingComma: "es5",
+								tabWidth: 4, semi: false, singleQuote: true, parser: "json-stringify",}).trim(),
+						});
+						vscode.window.showTextDocument(doc);
+					}	
+				}
+			} else {
+				vscode.window.showErrorMessage("Error:: Input valid scape json string");
 			}
 		} catch (error) {
 			vscode.window.showErrorMessage("Error:: Input text not a valid json");
