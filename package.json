@@ -6,7 +6,7 @@
 	"publisher": "yuvraj",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/yuvraj-arch/json-base64-vscode.git"
+		"url": "https://github.com/yuvraj-arch/json-scape-unscape-vscode.git"
 	},
 	"engines": {
 		"vscode": "^1.55.0"
