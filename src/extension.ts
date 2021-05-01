@@ -64,12 +64,12 @@ export function activate(context: vscode.ExtensionContext) {
 					goToStartingPosition(editor)
 					vscode.languages.setTextDocumentLanguage(editor.document, 'json');
 				} else {
-					const document1 = await vscode.workspace.openTextDocument({
+					const doc = await vscode.workspace.openTextDocument({
 						language: 'json',
 						content: prettier.format(content, {bracketSpacing:false, trailingComma: "es5",
 					 		tabWidth: 4, semi: false, singleQuote: true, parser: "json-stringify",}).trim(),
 					});
-					vscode.window.showTextDocument(document1);
+					vscode.window.showTextDocument(doc);
 				}	
 			}
 		} catch (error) {
