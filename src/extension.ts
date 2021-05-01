@@ -41,7 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			}		
 			if (diffSelectChar === 0 && flag) {
-				console.log("No Selection");
 				const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
 					semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
 			
@@ -65,7 +64,6 @@ export function activate(context: vscode.ExtensionContext) {
 					goToStartingPosition(editor)
 					vscode.languages.setTextDocumentLanguage(editor.document, 'json');
 				} else {
-					console.log("Selection Range");
 					const document1 = await vscode.workspace.openTextDocument({
 						language: 'json',
 						content: prettier.format(content, {bracketSpacing:false, trailingComma: "es5",
@@ -74,7 +72,6 @@ export function activate(context: vscode.ExtensionContext) {
 					vscode.window.showTextDocument(document1);
 				}	
 			}
-			vscode.window.showInformationMessage('Successfully Unscaped Json');
 		} catch (error) {
 			vscode.window.showErrorMessage("Error:: Input text not a valid json");
 		}
@@ -88,14 +85,16 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 			}
 			let content = editor.document.getText()
-			console.log("Selection Range");
-			const textEdit : vscode.TextEdit = vscode.TextEdit.replace(editor.selections[0], JSON.stringify(content));
+			let message = JSON.stringify(JSON.parse(content)).replace(/"/g, '\\"');
+			const lastLineId = editor.document.lineCount - 1;
+			const range : vscode.Range = new vscode.Range(0, 0, lastLineId, editor.document.lineAt(lastLineId).text.length);
+			const textEdit : vscode.TextEdit = vscode.TextEdit.replace(range, message);
 			await editor.edit((editBuilder) => {
 				editBuilder.replace(textEdit.range, textEdit.newText);
 			});
-			vscode.window.showInformationMessage('Successfully Scaped Json');
+			vscode.languages.setTextDocumentLanguage(editor.document, 'plaintext');
 		} catch (error) {
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.showErrorMessage("Error:: Input text not valid json");
 		}
 	});
 
