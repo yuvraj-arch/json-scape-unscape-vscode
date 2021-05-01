@@ -1,6 +1,6 @@
 {
 	"name": "json-scape-unscape",
-	"displayName": "Json-scape/unscape",
+	"displayName": "Json-Scape/Unscape",
 	"description": "remove scape from format json and formatted to scaped json",
 	"version": "1.0.0",
 	"publisher": "yuvraj",
