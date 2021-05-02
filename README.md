@@ -1,4 +1,4 @@
-# Json-Escape/Unescape README
+# Json Escape Unescape README
 
 This extension is used to escape and unescape json
 
@@ -8,7 +8,7 @@ This extension is used to escape and unescape json
 
 ## Release Notes
 
-### 1.2.0
+### 1.3.0
 
 Add features:
 - change names 
