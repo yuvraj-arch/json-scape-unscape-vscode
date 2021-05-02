@@ -1,8 +1,8 @@
 {
 	"name": "json-scape-unscape",
-	"displayName": "Json-Scape/Unscape",
-	"description": "remove scape from format json and formatted to scaped json",
-	"version": "1.0.0",
+	"displayName": "Json-Escape/Unescape",
+	"description": "remove escape from format json and formatted to escape json",
+	"version": "1.1.0",
 	"publisher": "yuvraj",
 	"repository": {
 		"type": "git",
@@ -24,7 +24,7 @@
 		"commands": [
 			{
 				"command": "json-vscode.unscapeJson",
-				"title": "Unscape Json"
+				"title": "Unescape Json"
 			},
 			{
 				"command": "json-vscode.scapeJson",
