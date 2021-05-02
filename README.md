@@ -21,5 +21,5 @@ Added features Escape and Unescape json string
 
 ## Working with Markdown
 * Open Command palattes `Shift+CMD+P` on macOS
-* To Unescape json string to formatted json search in Command palattes  `Unescape Json`
+* Convert Escape json string to formatted unescape json search in Command palattes  `Unescape Json`
 * To Fommated json to convert escape json string search in Command palattes  `Escape Json`
