@@ -18,6 +18,7 @@
 		"onCommand:json-vscode.unscapeJson",
 		"onCommand:json-vscode.scapeJson"
 	],
+	"icon": "icon.png",
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
