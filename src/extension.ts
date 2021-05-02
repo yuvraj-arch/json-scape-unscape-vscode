@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage('Not able to get text!');
 					return;
 			}
-			
+
 			if (editor.selections.length > 1){
 				vscode.window.showWarningMessage("Multiple Selection not supported");
 			}
@@ -23,29 +23,31 @@ export function activate(context: vscode.ExtensionContext) {
 			let diffSelectChar =  editor.selections[0].end.character - editor.selections[0].start.character
 			let diffLineChar =  editor.selections[0].end.line - editor.selections[0].start.line
 
-			let content : string;
+			let inputContent : string;
 			if (diffSelectChar === 0 ){
-				content = editor.document.getText().replace(/(?:\r\n|\r|\n)/g,'')
+				inputContent = editor.document.getText().replace(/(?:\r\n|\r|\n)/g,'').trim()
 			} else {
-				content = editor.document.getText(editor.selection).replace(/(?:\r\n|\r|\n)/g, '')
+				inputContent = editor.document.getText(editor.selection).replace(/(?:\r\n|\r|\n)/g, '').trim()
 			}
 			let flag = false;
-			let regex:string = '\\\\"'
+
 			let regexSlaceStr =  new RegExp('(^{)(\\\\)+(")(.*)(}$)');
 			while (true) {
-				if (regexSlaceStr.test(content)){
+				if (regexSlaceStr.test(inputContent)){
 					flag = true;
-					content = '"' + content + '"';
-					content = JSON.parse(content)
+					inputContent = '"' + inputContent + '"';
+					inputContent = JSON.parse(inputContent)
 				} else{
 					break;
 				}
 			}
 			if (flag) {
-				if (diffSelectChar) {
-					const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
-						semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
-				
+				const content : string = formateSpecialChar(inputContent);
+				if (diffSelectChar ===0 && diffLineChar === 0) {
+
+					const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 2, 
+					semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
+
 					const lastLineId = editor.document.lineCount - 1;
 					const range : vscode.Range = new vscode.Range(0, 0, lastLineId, editor.document.lineAt(lastLineId).text.length);
 					const textEdit : vscode.TextEdit = vscode.TextEdit.replace(range, message);
@@ -57,8 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
 					vscode.languages.setTextDocumentLanguage(editor.document, 'json');
 				} else {
 					if (diffLineChar === editor.document.lineCount-1) {
-						const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 4, 
-						semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
+						const message = prettier.format(content, {bracketSpacing:false, trailingComma: "es5", tabWidth: 2, 
+							semi: false, singleQuote: true,  parser: "json-stringify",}).trim();
 						const textEdit : vscode.TextEdit = vscode.TextEdit.replace(editor.selections[0], message);
 						await editor.edit((editBuilder) => {
 							editBuilder.replace(textEdit.range, textEdit.newText);
@@ -69,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
 						const doc = await vscode.workspace.openTextDocument({
 							language: 'json',
 							content: prettier.format(content, {bracketSpacing:false, trailingComma: "es5",
-								tabWidth: 4, semi: false, singleQuote: true, parser: "json-stringify",}).trim(),
+								tabWidth: 2, semi: false, singleQuote: true, parser: "json-stringify",}).trim(),
 						});
 						vscode.window.showTextDocument(doc);
 					}	
@@ -90,7 +92,8 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 			}
 			let content = editor.document.getText()
-			let message = JSON.stringify(JSON.parse(content)).replace(/"/g, '\\"');
+			let message = JSON.stringify(JSON.stringify(JSON.parse(content)))
+							.replace(/^"/g, '').replace(/"$/, '');
 			const lastLineId = editor.document.lineCount - 1;
 			const range : vscode.Range = new vscode.Range(0, 0, lastLineId, editor.document.lineAt(lastLineId).text.length);
 			const textEdit : vscode.TextEdit = vscode.TextEdit.replace(range, message);
@@ -116,3 +119,6 @@ function goToStartingPosition(textEditor: vscode.TextEditor) : void {
     textEditor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.Default);
 }
 
+function formateSpecialChar(text: string) : string {
+    return text.replace(/\n/g, '\\n')
+}
