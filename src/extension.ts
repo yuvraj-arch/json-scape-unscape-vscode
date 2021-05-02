@@ -1,12 +1,11 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+
 import * as vscode from 'vscode';
 import * as prettier from 'prettier';
 
 
 export function activate(context: vscode.ExtensionContext) {
 
-	console.log('Extension "Json-scape/unscape" is now active!');
+	console.log('Extension "Json-Escape/Unescape" is now active!');
 
 	let unscapeJsonDisposable = vscode.commands.registerCommand('json-vscode.unscapeJson', async () => {
 		try {
@@ -77,10 +76,10 @@ export function activate(context: vscode.ExtensionContext) {
 					}	
 				}
 			} else {
-				vscode.window.showErrorMessage("Error:: Input valid scape json string");
+				vscode.window.showErrorMessage("Error:: Input not valid escape json string");
 			}
 		} catch (error) {
-			vscode.window.showErrorMessage("Error:: Input text not a valid json");
+			vscode.window.showErrorMessage("Error:: Input not valid escape json string");
 		}
 	});
 
